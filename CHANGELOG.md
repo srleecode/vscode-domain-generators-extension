@@ -4,6 +4,10 @@ All notable changes to the "domain-generators" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 1.0.2
+
+Added update barrel command
+
 ### 1.0.0
 
 Initial release of domain generators

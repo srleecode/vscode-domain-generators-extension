@@ -8,6 +8,7 @@ const webview_1 = require("./lib/nx-console/webview");
 const generator_name_1 = require("./lib/model/generator-name");
 const command_1 = require("./lib/model/command");
 const error_utils_1 = require("./lib/error-utils");
+const get_barral_command_1 = require("./lib/get-barral-command");
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
@@ -44,6 +45,7 @@ function activate(context) {
     registerCommand("domain-generators.test", generator_name_1.GeneratorName.test, command_1.Command.run);
     registerCommand("domain-generators.ct", generator_name_1.GeneratorName.ct, command_1.Command.run);
     registerCommand("domain-generators.e2e", generator_name_1.GeneratorName.e2e, command_1.Command.run);
+    context.subscriptions.push((0, get_barral_command_1.getBarrelCommand)());
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

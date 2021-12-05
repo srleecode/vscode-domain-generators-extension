@@ -1,10 +1,11 @@
-import { ExtensionContext, extensions, commands, Uri } from "vscode";
+import { ExtensionContext, extensions, commands, Uri, window } from "vscode";
 import { getCommandTriggerContext } from "./lib/get-command-trigger-context";
 import { CliTaskProvider } from "./lib/nx-console/cli-task-provider";
 import { revealWebViewPanel } from "./lib/nx-console/webview";
 import { GeneratorName } from "./lib/model/generator-name";
 import { Command } from "./lib/model/command";
 import { showError } from "./lib/error-utils";
+import { getBarrelCommand } from "./lib/get-barral-command";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -108,6 +109,8 @@ export function activate(context: ExtensionContext) {
   registerCommand("domain-generators.test", GeneratorName.test, Command.run);
   registerCommand("domain-generators.ct", GeneratorName.ct, Command.run);
   registerCommand("domain-generators.e2e", GeneratorName.e2e, Command.run);
+
+  context.subscriptions.push(getBarrelCommand());
 }
 
 // this method is called when your extension is deactivated
