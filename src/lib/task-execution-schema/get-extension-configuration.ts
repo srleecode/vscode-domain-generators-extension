@@ -28,11 +28,10 @@ const getDomainLibraryOptions = (
 const getComponentOptions = (
   workSpaceConfig: WorkspaceConfiguration
 ): ComponentConfiguration => ({
-  mountType: workSpaceConfig.get("mountType") as "component" | "story",
+  mountType: workSpaceConfig.get("mountType") as "none" | "component" | "story",
   unitTestType: workSpaceConfig.get("unitTestType") as
     | "noTest"
     | "testBed"
     | "noTestBed",
   style: workSpaceConfig.get("style") as "scss" | "less" | "css",
-  displayBlock: workSpaceConfig.get("displayBlock.enabled") as boolean,
 });

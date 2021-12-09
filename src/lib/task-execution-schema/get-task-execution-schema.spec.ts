@@ -34,7 +34,6 @@ describe("getSchematicTaskExecutionSchema", () => {
     collection: "@srleecode/domain",
     mountType: "story",
     unitTestType: "noTest",
-    displayBlock: true,
     buildable: true,
     enableIvy: true,
     strict: true,

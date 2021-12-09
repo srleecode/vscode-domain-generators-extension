@@ -12,8 +12,7 @@ export interface DomainLibraryConfiguration {
 }
 
 export interface ComponentConfiguration {
-  mountType: "component" | "story";
+  mountType: "none" | "component" | "story";
   unitTestType: "noTest" | "testBed" | "noTestBed";
   style: "scss" | "less" | "css";
-  displayBlock: boolean;
 }
