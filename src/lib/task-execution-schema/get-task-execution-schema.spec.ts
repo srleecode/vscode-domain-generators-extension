@@ -32,7 +32,6 @@ describe("getSchematicTaskExecutionSchema", () => {
   const extensionConfiguration: ExtensionConfiguration = {
     style: "scss",
     collection: "@srleecode/domain",
-    mountType: "story",
     unitTestType: "noTest",
     buildable: true,
     enableIvy: true,
