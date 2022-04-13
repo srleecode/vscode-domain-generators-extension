@@ -5,6 +5,7 @@ export enum GeneratorName {
   removeGroupingFolder = "removeGroupingFolder",
   ngApplicationLayer = "ngApplicationLayer",
   ngComponent = "ngComponent",
+  ngComponentGlobalStyles = "ngComponentGlobalStyles",
   ngDataAccessLayer = "ngDataAccessLayer",
   ngDirective = "ngDirective",
   ngDomainLayer = "ngDomainLayer",

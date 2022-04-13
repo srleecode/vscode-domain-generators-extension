@@ -3,7 +3,7 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "engines": {
     "vscode": "^1.64.0"
   },
@@ -18,6 +18,7 @@
     "onCommand:domain-generators.removeGroupingFolder",
     "onCommand:domain-generators.ngApplicationLayer",
     "onCommand:domain-generators.ngComponent",
+    "onCommand:domain-generators.ngComponentGlobalStyles",
     "onCommand:domain-generators.ngDataAccessLayer",
     "onCommand:domain-generators.ngDirective",
     "onCommand:domain-generators.ngDomainLayer",
@@ -65,6 +66,10 @@
       {
         "command": "domain-generators.ngComponent",
         "title": "Create component"
+      },
+      {
+        "command": "domain-generators.ngComponentGlobalStyles",
+        "title": "Create component global styles"
       },
       {
         "command": "domain-generators.ngDataAccessLayer",
@@ -150,28 +155,33 @@
           "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
         },
         {
-          "command": "domain-generators.ngDataAccessLayer",
+          "command": "domain-generators.ngComponentGlobalStyles",
           "group": "2+domainGroupingFolder@3",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](feature|shell|ui).*$/"
         },
         {
-          "command": "domain-generators.ngDirective",
+          "command": "domain-generators.ngDataAccessLayer",
           "group": "2+domainGroupingFolder@4",
           "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
         },
         {
-          "command": "domain-generators.ngDomainLayer",
+          "command": "domain-generators.ngDirective",
           "group": "2+domainGroupingFolder@5",
           "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
         },
         {
-          "command": "domain-generators.ngUtilLayer",
+          "command": "domain-generators.ngDomainLayer",
           "group": "2+domainGroupingFolder@6",
           "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
         },
         {
-          "command": "domain-generators.domainTest",
+          "command": "domain-generators.ngUtilLayer",
           "group": "2+domainGroupingFolder@7",
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
+        },
+        {
+          "command": "domain-generators.domainTest",
+          "group": "2+domainGroupingFolder@8",
           "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|domain|feature|directive|shell|ui|util))[^./\\\\]+)+$/"
         },
         {
@@ -231,6 +241,10 @@
         },
         {
           "command": "domain-generators.ngComponent",
+          "when": "never"
+        },
+        {
+          "command": "domain-generators.ngComponentGlobalStyles",
           "when": "never"
         },
         {

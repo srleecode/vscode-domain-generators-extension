@@ -9,7 +9,11 @@ export const getDefaultValue = (
   extensionConfiguration: ExtensionConfiguration,
   gemeratorName: GeneratorName
 ): any => {
-  if (optionName === "groupingFolder" || optionName === "libraryFolder") {
+  if (
+    optionName === "groupingFolder" ||
+    optionName === "libraryFolder" ||
+    optionName === "componentLibraryPath"
+  ) {
     return commandTriggerContext.groupingFolder;
   } else if (optionName === "projectName") {
     return commandTriggerContext.dasherizedGroupingFolderPath;

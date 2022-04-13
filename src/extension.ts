@@ -71,6 +71,11 @@ export function activate(context: ExtensionContext) {
     Command.generate
   );
   registerCommand(
+    "domain-generators.ngComponentGlobalStyles",
+    GeneratorName.ngComponentGlobalStyles,
+    Command.generate
+  );
+  registerCommand(
     "domain-generators.ngDataAccessLayer",
     GeneratorName.ngDataAccessLayer,
     Command.generate
