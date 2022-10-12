@@ -21,22 +21,12 @@ import * as getSchemaJsonMock from "./get-schema-json";
 import { schemaMock } from "../model/schema-mock";
 import { ItemTooltips } from "../model/item-tooltips.model";
 import { CommandTriggerContext } from "../get-command-trigger-context";
-import * as extensionConfig from "./get-extension-configuration";
-import { ExtensionConfiguration } from "../model/extension-configuration";
+
 describe("getSchematicTaskExecutionSchema", () => {
   let schema: TaskExecutionSchema;
   let commandTriggerContext: CommandTriggerContext = {
     groupingFolder: "libs/ng-second-test-app",
     dasherizedGroupingFolderPath: "ng-second-test-app",
-  };
-  const extensionConfiguration: ExtensionConfiguration = {
-    style: "scss",
-    collection: "@srleecode/domain",
-    unitTestType: "noTest",
-    buildable: true,
-    enableIvy: true,
-    strict: true,
-    publishable: false,
   };
   const getSelectedOption = (options: any[] | undefined, optionName: string) =>
     (options || []).filter((option) => option.name === optionName)[0];
@@ -45,9 +35,6 @@ describe("getSchematicTaskExecutionSchema", () => {
     jest
       .spyOn(getSchemaJsonMock, "getSchemaJson")
       .mockReturnValue(schemaMock as any);
-    jest
-      .spyOn(extensionConfig, "getExtensionConfiguration")
-      .mockReturnValue(extensionConfiguration);
     schema = getTaskExecutionSchema(
       GeneratorName.appGroupingFolder,
       Command.generate,
@@ -120,19 +107,9 @@ describe("getSchematicTaskExecutionSchema", () => {
         "libs/ng-second-test-app"
       );
     });
-    it("should override mockFileName with mock", () => {
-      expect(getSelectedOption(schema?.options, "mockFileName").default).toBe(
-        "mock"
-      );
-    });
     it("should override •	projectName with dasherized version of the command trigger context grouping folder", () => {
       expect(getSelectedOption(schema?.options, "projectName").default).toBe(
         "ng-second-test-app"
-      );
-    });
-    it("should set default in from extension configuration", () => {
-      expect(getSelectedOption(schema?.options, "style").default).toBe(
-        extensionConfiguration.style
       );
     });
   });

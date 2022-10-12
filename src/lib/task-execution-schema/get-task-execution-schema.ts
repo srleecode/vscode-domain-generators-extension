@@ -18,7 +18,7 @@ export const getTaskExecutionSchema = (
   return {
     name,
     collection,
-    options: getOptions(schemaJson, commandTriggerContext, generatorName),
+    options: getOptions(schemaJson, commandTriggerContext),
     description: schemaJson.description,
     command: commandType.toString(),
     positional: getPositional(

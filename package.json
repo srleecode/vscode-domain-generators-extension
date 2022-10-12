@@ -3,9 +3,9 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "engines": {
-    "vscode": "^1.64.0"
+    "vscode": "^1.72.0"
   },
   "categories": [
     "Other"
@@ -292,51 +292,7 @@
     "configuration": {
       "type": "object",
       "title": "Domain generators",
-      "properties": {
-        "domainGenerators.style": {
-          "type": "string",
-          "default": "scss",
-          "enum": [
-            "scss",
-            "less",
-            "css"
-          ]
-        },
-        "domainGenerators.unitTestType": {
-          "type": "string",
-          "default": "noTest",
-          "enum": [
-            "noTest",
-            "testBed",
-            "noTestBed"
-          ]
-        },
-        "domainGenerators.displayBlock.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Specifies if the add components style will contain `:host { display: block; }`"
-        },
-        "domainGenerators.buildable.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Specifies if the buildable flag is used when creating domain libraries"
-        },
-        "domainGenerators.publishable.enabled": {
-          "type": "boolean",
-          "default": false,
-          "description": "Specifies if the publishable flag is used when creating domain libraries. This is not recommended when enableIvy is true"
-        },
-        "domainGenerators.strict.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Specifies if the strict flag is used when creating domain libraries."
-        },
-        "domainGenerators.enableIvy.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Specifies if the enableIvy flag is used when creating domain libraries."
-        }
-      }
+      "properties": {}
     }
   },
   "scripts": {

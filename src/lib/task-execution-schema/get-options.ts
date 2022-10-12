@@ -1,6 +1,6 @@
 import { CommandTriggerContext } from "../get-command-trigger-context";
 import { SchemaJson } from "../model/schema-json";
-import { Option } from "../model/schema-property";
+import { Option } from "../model/option";
 import {
   XPrompt,
   isLongFormXPrompt,
@@ -8,15 +8,11 @@ import {
 } from "../model/x-prompt.model";
 import { getDefaultValue } from "./get-default-value";
 import { getEnumTooltips } from "./get-enum-tooltips";
-import { getExtensionConfiguration } from "./get-extension-configuration";
-import { GeneratorName } from "../model/generator-name";
 
 export const getOptions = (
   schema: SchemaJson,
-  commandTriggerContext: CommandTriggerContext,
-  gemeratorName: GeneratorName
+  commandTriggerContext: CommandTriggerContext
 ): Option[] => {
-  const extensionConfiguration = getExtensionConfiguration();
   return Object.keys(schema.properties).map((key): Option => {
     const schemaProperty = schema.properties[key];
     const option: Option = {
@@ -28,9 +24,7 @@ export const getOptions = (
     const defaultValue = getDefaultValue(
       key,
       schemaProperty.default,
-      commandTriggerContext,
-      extensionConfiguration,
-      gemeratorName
+      commandTriggerContext
     );
     option.required = schema.required.includes(key);
     if (option.enum) {
