@@ -4,6 +4,7 @@ import { GeneratorName } from "../model/generator-name";
 import { getSchemaJson } from "./get-schema-json";
 import { getOptions } from "./get-options";
 import { CommandTriggerContext } from "../get-command-trigger-context";
+import { workspace } from "vscode";
 
 export const getTaskExecutionSchema = (
   generatorName: GeneratorName,
@@ -12,8 +13,7 @@ export const getTaskExecutionSchema = (
 ): TaskExecutionSchema => {
   const name = generatorName.toString();
   const cliName = "nx";
-  const collection =
-    commandType === Command.generate ? "@srleecode/domain" : "";
+  const collection = getCollection(commandType);
   const schemaJson = getSchemaJson(commandType, generatorName, collection);
   return {
     name,
@@ -32,6 +32,14 @@ export const getTaskExecutionSchema = (
   };
 };
 
+const getCollection = (commandType: Command): string => {
+  if (commandType === Command.generate) {
+    const workSpaceConfig = workspace.getConfiguration("domainGenerators");
+    const customCollection = workSpaceConfig.get("collection") as string;
+    return customCollection ? customCollection : "@srleecode/domain";
+  }
+  return "";
+};
 const getPositional = (
   generatorName: GeneratorName,
   commandType: Command,

@@ -9,10 +9,14 @@ jest.mock(
           },
         },
       ],
+      getConfiguration: () => ({
+        get: () => "",
+      }),
     },
   }),
   { virtual: true }
 );
+import * as vscodeMock from "vscode";
 import { GeneratorName } from "../model/generator-name";
 import { Command } from "../model/command";
 import { getTaskExecutionSchema } from "./get-task-execution-schema";
@@ -162,6 +166,18 @@ describe("getSchematicTaskExecutionSchema", () => {
       expect(schema.command).toBe("run");
       expect(schema.name).toBe("e2e");
       expect(schema.positional).toBe("e2e-ng-second-test-app-test-domain:e2e");
+    });
+    it("should use custom collection when it is set and generator is used", () => {
+      const customCollection = "test-collection";
+      const mock = jest
+        .spyOn(vscodeMock.workspace, "getConfiguration")
+        .mockReturnValue({ get: () => customCollection } as any);
+      schema = getTaskExecutionSchema(GeneratorName.e2e, Command.generate, {
+        groupingFolder: "libs/ng-second-test-app/test-domain",
+        dasherizedGroupingFolderPath: "ng-second-test-app-test-domain",
+      });
+      expect(schema.collection).toBe(customCollection);
+      mock.mockReset();
     });
   });
 });
