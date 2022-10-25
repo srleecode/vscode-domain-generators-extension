@@ -9,16 +9,23 @@ import { workspace } from "vscode";
 export const getTaskExecutionSchema = (
   generatorName: GeneratorName,
   commandType: Command,
-  commandTriggerContext: CommandTriggerContext
+  commandTriggerContext: CommandTriggerContext,
+  workspaceJsonPath: string
 ): TaskExecutionSchema => {
   const name = generatorName.toString();
   const cliName = "nx";
-  const collection = getCollection(commandType);
+  const collection = getCollection(commandType, generatorName);
   const schemaJson = getSchemaJson(commandType, generatorName, collection);
   return {
     name,
     collection,
-    options: getOptions(schemaJson, commandTriggerContext),
+    options: getOptions(
+      schemaJson,
+      commandTriggerContext,
+      collection,
+      generatorName,
+      workspaceJsonPath
+    ),
     description: schemaJson.description,
     command: commandType.toString(),
     positional: getPositional(
@@ -32,11 +39,22 @@ export const getTaskExecutionSchema = (
   };
 };
 
-const getCollection = (commandType: Command): string => {
+const getCollection = (
+  commandType: Command,
+  generatorName: GeneratorName
+): string => {
   if (commandType === Command.generate) {
     const workSpaceConfig = workspace.getConfiguration("domainGenerators");
-    const customCollection = workSpaceConfig.get("collection") as string;
-    return customCollection ? customCollection : "@srleecode/domain";
+    const customCollection = workSpaceConfig.get("customCollection") as string;
+    const customCollectionGenerators = workSpaceConfig.get(
+      "customCollectionGenerators"
+    ) as string[];
+    const isGeneratorUsingCustomCollection =
+      customCollection &&
+      (customCollectionGenerators || []).includes(generatorName.toString());
+    return isGeneratorUsingCustomCollection
+      ? customCollection
+      : "@srleecode/domain";
   }
   return "";
 };

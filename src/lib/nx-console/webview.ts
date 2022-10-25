@@ -31,7 +31,8 @@ export function revealWebViewPanel(
   const schema = getTaskExecutionSchema(
     generatorName,
     command,
-    commandTriggerContext
+    commandTriggerContext,
+    cliTaskProvider.workspaceJsonPath
   );
 
   if (!schema) {

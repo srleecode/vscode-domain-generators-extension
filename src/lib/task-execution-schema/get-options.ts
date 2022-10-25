@@ -8,11 +8,22 @@ import {
 } from "../model/x-prompt.model";
 import { getDefaultValue } from "./get-default-value";
 import { getEnumTooltips } from "./get-enum-tooltips";
+import { getWorkspaceJsonDefaults } from "./get-workspace-json-defaults";
+import { GeneratorName } from "../model/generator-name";
 
 export const getOptions = (
   schema: SchemaJson,
-  commandTriggerContext: CommandTriggerContext
+  commandTriggerContext: CommandTriggerContext,
+  collection: string,
+  generatorName: GeneratorName,
+  workspaceJsonPath: string
 ): Option[] => {
+  const workspaceJsonDefaults = getWorkspaceJsonDefaults(
+    collection,
+    generatorName,
+    workspaceJsonPath
+  );
+
   return Object.keys(schema.properties).map((key): Option => {
     const schemaProperty = schema.properties[key];
     const option: Option = {
@@ -24,7 +35,8 @@ export const getOptions = (
     const defaultValue = getDefaultValue(
       key,
       schemaProperty.default,
-      commandTriggerContext
+      commandTriggerContext,
+      workspaceJsonDefaults[generatorName.toString()]
     );
     option.required = schema.required.includes(key);
     if (option.enum) {

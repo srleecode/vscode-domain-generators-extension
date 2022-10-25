@@ -1,4 +1,4 @@
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, join, parse } from "path";
 import {
   Task,
@@ -86,7 +86,7 @@ export class CliTaskProvider implements TaskProvider {
   }
 
   private createTask(definition: CliTaskDefinition): Task {
-    const useNxCli = this.getWorkspacePath().endsWith("workspace.json");
+    const useNxCli = this.getUseNxCli();
     const type = useNxCli ? "nx" : "ng";
     const taskDefinition: TaskDefinition = {
       command: definition.command,
@@ -117,6 +117,16 @@ export class CliTaskProvider implements TaskProvider {
     return new Task(taskDefinition, scope, name, source, execution);
   }
 
+  private getUseNxCli(): boolean {
+    if (this.getWorkspacePath().endsWith("workspace.json")) {
+      return true;
+    }
+    const angularJson = JSON.parse(readFileSync("angular.json").toString());
+    if (angularJson.version === 2) {
+      return true;
+    }
+    return false;
+  }
   private getWorkspacePath(): string {
     return join(this.workspaceJsonPath, "..");
   }

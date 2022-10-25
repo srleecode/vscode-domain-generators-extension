@@ -25,9 +25,11 @@ import * as getSchemaJsonMock from "./get-schema-json";
 import { schemaMock } from "../model/schema-mock";
 import { ItemTooltips } from "../model/item-tooltips.model";
 import { CommandTriggerContext } from "../get-command-trigger-context";
+import * as getWorkspaceJsonMock from "./get-workspace-json";
 
 describe("getSchematicTaskExecutionSchema", () => {
   let schema: TaskExecutionSchema;
+  const customCollection = "@custom-collection/domain";
   let commandTriggerContext: CommandTriggerContext = {
     groupingFolder: "libs/ng-second-test-app",
     dasherizedGroupingFolderPath: "ng-second-test-app",
@@ -39,10 +41,28 @@ describe("getSchematicTaskExecutionSchema", () => {
     jest
       .spyOn(getSchemaJsonMock, "getSchemaJson")
       .mockReturnValue(schemaMock as any);
+    const angularJson = {
+      ["generators"]: {
+        "@srleecode/domain": {
+          [GeneratorName.ngComponent.toString()]: {
+            style: "css",
+          },
+        },
+        [customCollection]: {
+          [GeneratorName.ngComponent.toString()]: {
+            style: "less",
+          },
+        },
+      },
+    };
+    jest
+      .spyOn(getWorkspaceJsonMock, "getWorkspaceJson")
+      .mockReturnValue(angularJson);
     schema = getTaskExecutionSchema(
       GeneratorName.appGroupingFolder,
       Command.generate,
-      commandTriggerContext
+      commandTriggerContext,
+      "workspace.json"
     );
   });
 
@@ -54,9 +74,6 @@ describe("getSchematicTaskExecutionSchema", () => {
   });
   it("should set command to generate", () => {
     expect(schema?.command).toBe("generate");
-  });
-  it("should set cliName to ng when workspace.json is not found", () => {
-    expect(schema?.cliName).toBe("nx");
   });
   it("should set items when schema option has enum values", () => {
     expect(getSelectedOption(schema?.options, "uiFramework").items).toEqual([
@@ -111,7 +128,7 @@ describe("getSchematicTaskExecutionSchema", () => {
         "libs/ng-second-test-app"
       );
     });
-    it("should override •	projectName with dasherized version of the command trigger context grouping folder", () => {
+    it("should override projectName with dasherized version of the command trigger context grouping folder", () => {
       expect(getSelectedOption(schema?.options, "projectName").default).toBe(
         "ng-second-test-app"
       );
@@ -120,12 +137,17 @@ describe("getSchematicTaskExecutionSchema", () => {
 
   describe("run", () => {
     it("should get correct run lint schema", () => {
-      schema = getTaskExecutionSchema(GeneratorName.lint, Command.run, {
-        groupingFolder:
-          "libs/ng-second-test-app/test-domain/feature-test-example",
-        dasherizedGroupingFolderPath:
-          "ng-second-test-app-test-domain-feature-test-example",
-      });
+      schema = getTaskExecutionSchema(
+        GeneratorName.lint,
+        Command.run,
+        {
+          groupingFolder:
+            "libs/ng-second-test-app/test-domain/feature-test-example",
+          dasherizedGroupingFolderPath:
+            "ng-second-test-app-test-domain-feature-test-example",
+        },
+        "workspace.json"
+      );
       expect(schema.command).toBe("run");
       expect(schema.name).toBe("lint");
       expect(schema.positional).toBe(
@@ -133,12 +155,17 @@ describe("getSchematicTaskExecutionSchema", () => {
       );
     });
     it("should get correct run test schema", () => {
-      schema = getTaskExecutionSchema(GeneratorName.test, Command.run, {
-        groupingFolder:
-          "libs/ng-second-test-app/test-domain/feature-test-example",
-        dasherizedGroupingFolderPath:
-          "ng-second-test-app-test-domain-feature-test-example",
-      });
+      schema = getTaskExecutionSchema(
+        GeneratorName.test,
+        Command.run,
+        {
+          groupingFolder:
+            "libs/ng-second-test-app/test-domain/feature-test-example",
+          dasherizedGroupingFolderPath:
+            "ng-second-test-app-test-domain-feature-test-example",
+        },
+        "workspace.json"
+      );
       expect(schema.command).toBe("run");
       expect(schema.name).toBe("test");
       expect(schema.positional).toBe(
@@ -146,12 +173,17 @@ describe("getSchematicTaskExecutionSchema", () => {
       );
     });
     it("should get correct run ct schema", () => {
-      schema = getTaskExecutionSchema(GeneratorName.ct, Command.run, {
-        groupingFolder:
-          "libs/ng-second-test-app/test-domain/feature-test-example",
-        dasherizedGroupingFolderPath:
-          "ng-second-test-app-test-domain-feature-test-example",
-      });
+      schema = getTaskExecutionSchema(
+        GeneratorName.ct,
+        Command.run,
+        {
+          groupingFolder:
+            "libs/ng-second-test-app/test-domain/feature-test-example",
+          dasherizedGroupingFolderPath:
+            "ng-second-test-app-test-domain-feature-test-example",
+        },
+        "workspace.json"
+      );
       expect(schema.command).toBe("run");
       expect(schema.name).toBe("ct");
       expect(schema.positional).toBe(
@@ -159,25 +191,52 @@ describe("getSchematicTaskExecutionSchema", () => {
       );
     });
     it("should get correct run e2e schema", () => {
-      schema = getTaskExecutionSchema(GeneratorName.e2e, Command.run, {
-        groupingFolder: "libs/ng-second-test-app/test-domain",
-        dasherizedGroupingFolderPath: "ng-second-test-app-test-domain",
-      });
+      schema = getTaskExecutionSchema(
+        GeneratorName.e2e,
+        Command.run,
+        {
+          groupingFolder: "libs/ng-second-test-app/test-domain",
+          dasherizedGroupingFolderPath: "ng-second-test-app-test-domain",
+        },
+        "workspace.json"
+      );
       expect(schema.command).toBe("run");
       expect(schema.name).toBe("e2e");
       expect(schema.positional).toBe("e2e-ng-second-test-app-test-domain:e2e");
     });
-    it("should use custom collection when it is set and generator is used", () => {
-      const customCollection = "test-collection";
-      const mock = jest
-        .spyOn(vscodeMock.workspace, "getConfiguration")
-        .mockReturnValue({ get: () => customCollection } as any);
-      schema = getTaskExecutionSchema(GeneratorName.e2e, Command.generate, {
-        groupingFolder: "libs/ng-second-test-app/test-domain",
-        dasherizedGroupingFolderPath: "ng-second-test-app-test-domain",
+    describe("custom collection", () => {
+      beforeAll(() => {
+        const mock = jest
+          .spyOn(vscodeMock.workspace, "getConfiguration")
+          .mockReturnValue({
+            get: (type: string) => {
+              if (type === "customCollection") {
+                return customCollection;
+              }
+              if (type === "customCollectionGenerators") {
+                return [GeneratorName.ngComponent];
+              }
+            },
+          } as any);
+        schema = getTaskExecutionSchema(
+          GeneratorName.ngComponent,
+          Command.generate,
+          {
+            groupingFolder: "libs/ng-second-test-app/test-domain",
+            dasherizedGroupingFolderPath: "ng-second-test-app-test-domain",
+          },
+          "workspace.json"
+        );
+        mock.mockReset();
       });
-      expect(schema.collection).toBe(customCollection);
-      mock.mockReset();
+      it("should use custom collection when it is set in the extension settings and generator is used", () => {
+        expect(schema.collection).toBe(customCollection);
+      });
+      it("should override default using value from workspace json", () => {
+        expect(getSelectedOption(schema?.options, "style").default).toEqual(
+          "less"
+        );
+      });
     });
   });
 });

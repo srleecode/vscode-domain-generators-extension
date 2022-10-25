@@ -3,9 +3,14 @@ import { CommandTriggerContext } from "../get-command-trigger-context";
 export const getDefaultValue = (
   optionName: string,
   schemaOptionDefault: any,
-  commandTriggerContext: CommandTriggerContext
+  commandTriggerContext: CommandTriggerContext,
+  workspaceJsonDefaults: {
+    [name: string]: string;
+  }
 ): any => {
-  if (
+  if (workspaceJsonDefaults?.[optionName]) {
+    return workspaceJsonDefaults[optionName];
+  } else if (
     optionName === "groupingFolder" ||
     optionName === "libraryFolder" ||
     optionName === "componentLibraryPath"
