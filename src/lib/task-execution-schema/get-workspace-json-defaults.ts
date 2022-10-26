@@ -1,4 +1,3 @@
-import { readFileSync } from "fs";
 import { GeneratorName } from "../model/generator-name";
 import { getWorkspaceJson } from "./get-workspace-json";
 
@@ -12,6 +11,12 @@ export const getWorkspaceJsonDefaults = (
   const workspaceJson = getWorkspaceJson(workspaceJsonPath);
 
   let defaults = workspaceJson.generators;
+  if (!defaults) {
+    const angularJson = getWorkspaceJson(
+      workspaceJsonPath.replace("angular.json", "nx.json")
+    );
+    defaults = angularJson.generators;
+  }
 
   if (!defaults) {
     try {
