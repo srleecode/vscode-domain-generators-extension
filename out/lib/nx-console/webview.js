@@ -6,11 +6,13 @@ const path_1 = require("path");
 const vscode_1 = require("vscode");
 const get_task_execution_schema_1 = require("../task-execution-schema/get-task-execution-schema");
 const get_cli_task_with_defaults_1 = require("../get-cli-task-with-defaults");
+const task_execution_output_message_type_1 = require("../model/task-execution-output-message-type");
+const task_execution_output_message_1 = require("../model/task-execution-output-message");
 let webviewPanel;
 let webViewSchema;
 let indexHtml;
 function revealWebViewPanel(context, nxConsoleExtensionPath, cliTaskProvider, generatorName, command, commandTriggerContext) {
-    const schema = (0, get_task_execution_schema_1.getTaskExecutionSchema)(generatorName, command, commandTriggerContext);
+    const schema = (0, get_task_execution_schema_1.getTaskExecutionSchema)(generatorName, command, commandTriggerContext, cliTaskProvider.workspaceJsonPath);
     if (!schema) {
         return;
     }
@@ -19,6 +21,12 @@ function revealWebViewPanel(context, nxConsoleExtensionPath, cliTaskProvider, ge
     return webViewPanel;
 }
 exports.revealWebViewPanel = revealWebViewPanel;
+function publishMessagesToTaskExecutionForm(webViewPanelRef, schema) {
+    webViewPanelRef.webview.postMessage(new task_execution_output_message_1.TaskExecutionSchemaInputMessage(schema));
+    webViewPanelRef.webview.postMessage(new task_execution_output_message_1.TaskExecutionGlobalConfigurationInputMessage({
+        enableTaskExecutionDryRunOnChange: true,
+    }));
+}
 function createWebViewPanel(nxConsoleExtensionPath, schema, title, cliTaskProvider) {
     webViewSchema = schema;
     if (webviewPanel) {
@@ -39,9 +47,19 @@ function createWebViewPanel(nxConsoleExtensionPath, schema, title, cliTaskProvid
         });
         webviewPanel.iconPath = vscode_1.Uri.file((0, path_1.join)(nxConsoleExtensionPath, "assets", "nx-console.svg"));
         webviewPanel.webview.html = getIframeHtml(nxConsoleExtensionPath, webViewSchema);
+        webviewPanel.webview.onDidReceiveMessage((message) => { });
         webviewPanel.webview.onDidReceiveMessage((message) => {
-            const messageWithOptionDefaults = (0, get_cli_task_with_defaults_1.getCliTaskWithDefaults)(message, webViewSchema);
-            cliTaskProvider.executeTask(messageWithOptionDefaults);
+            switch (message.type) {
+                case task_execution_output_message_type_1.TaskExecutionOutputMessageType.RunCommand: {
+                    const messageWithOptionDefaults = (0, get_cli_task_with_defaults_1.getCliTaskWithDefaults)(message.payload, webViewSchema);
+                    cliTaskProvider.executeTask(messageWithOptionDefaults);
+                    break;
+                }
+                case task_execution_output_message_type_1.TaskExecutionOutputMessageType.TaskExecutionFormInit: {
+                    publishMessagesToTaskExecutionForm(webviewPanel, schema);
+                    break;
+                }
+            }
         });
     }
     return webviewPanel;

@@ -4,15 +4,15 @@ exports.getOptions = void 0;
 const x_prompt_model_1 = require("../model/x-prompt.model");
 const get_default_value_1 = require("./get-default-value");
 const get_enum_tooltips_1 = require("./get-enum-tooltips");
-const get_extension_configuration_1 = require("./get-extension-configuration");
-const getOptions = (schema, commandTriggerContext, gemeratorName) => {
-    const extensionConfiguration = (0, get_extension_configuration_1.getExtensionConfiguration)();
+const get_workspace_json_defaults_1 = require("./get-workspace-json-defaults");
+const getOptions = (schema, commandTriggerContext, collection, generatorName, workspaceJsonPath) => {
+    const workspaceJsonDefaults = (0, get_workspace_json_defaults_1.getWorkspaceJsonDefaults)(collection, generatorName, workspaceJsonPath);
     return Object.keys(schema.properties).map((key) => {
         const schemaProperty = schema.properties[key];
         const option = Object.assign({ name: key }, schemaProperty);
         delete option.items;
         const xPrompt = schemaProperty["x-prompt"];
-        const defaultValue = (0, get_default_value_1.getDefaultValue)(key, schemaProperty.default, commandTriggerContext, extensionConfiguration, gemeratorName);
+        const defaultValue = (0, get_default_value_1.getDefaultValue)(key, schemaProperty.default, commandTriggerContext, workspaceJsonDefaults[generatorName.toString()]);
         option.required = schema.required.includes(key);
         if (option.enum) {
             option.items = option.enum.map((item) => item.toString());

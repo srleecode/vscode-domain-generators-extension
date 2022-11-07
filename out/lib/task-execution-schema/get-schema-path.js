@@ -28,6 +28,8 @@ const getSchemaRelativePath = (generatorName) => {
             return "node_modules/@srleecode/domain/generators/front-end/angular/application-layer/src/schema.json";
         case generator_name_1.GeneratorName.ngComponent:
             return "node_modules/@srleecode/domain/generators/front-end/angular/component/src/schema.json";
+        case generator_name_1.GeneratorName.ngComponentGlobalStyles:
+            return "node_modules/@srleecode/domain/generators/front-end/angular/component-global-styles/src/schema.json";
         case generator_name_1.GeneratorName.ngDataAccessLayer:
             return "node_modules/@srleecode/domain/generators/front-end/angular/data-access-layer/src/schema.json";
         case generator_name_1.GeneratorName.ngDirective:

@@ -62,7 +62,7 @@ class CliTaskProvider {
         }
     }
     createTask(definition) {
-        const useNxCli = this.getWorkspacePath().endsWith("workspace.json");
+        const useNxCli = true;
         const type = useNxCli ? "nx" : "ng";
         const taskDefinition = {
             command: definition.command,

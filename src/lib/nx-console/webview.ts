@@ -15,6 +15,12 @@ import { GeneratorName } from "../model/generator-name";
 import { CommandTriggerContext } from "../get-command-trigger-context";
 import { Command } from "../model/command";
 import { getCliTaskWithDefaults } from "../get-cli-task-with-defaults";
+import { TaskExecutionOutputMessageType } from "../model/task-execution-output-message-type";
+import {
+  TaskExecutionGlobalConfigurationInputMessage,
+  TaskExecutionOutputMessage,
+  TaskExecutionSchemaInputMessage,
+} from "../model/task-execution-output-message";
 
 let webviewPanel: WebviewPanel | undefined;
 let webViewSchema: TaskExecutionSchema;
@@ -50,6 +56,20 @@ export function revealWebViewPanel(
   return webViewPanel;
 }
 
+function publishMessagesToTaskExecutionForm(
+  webViewPanelRef: WebviewPanel,
+  schema: TaskExecutionSchema
+) {
+  webViewPanelRef.webview.postMessage(
+    new TaskExecutionSchemaInputMessage(schema)
+  );
+  webViewPanelRef.webview.postMessage(
+    new TaskExecutionGlobalConfigurationInputMessage({
+      enableTaskExecutionDryRunOnChange: true,
+    })
+  );
+}
+
 export function createWebViewPanel(
   nxConsoleExtensionPath: string,
   schema: TaskExecutionSchema,
@@ -83,13 +103,30 @@ export function createWebViewPanel(
       webViewSchema
     );
 
-    webviewPanel.webview.onDidReceiveMessage((message: CliTaskDefinition) => {
-      const messageWithOptionDefaults = getCliTaskWithDefaults(
-        message,
-        webViewSchema
-      );
-      cliTaskProvider.executeTask(messageWithOptionDefaults);
-    });
+    webviewPanel.webview.onDidReceiveMessage(
+      (message: CliTaskDefinition) => {}
+    );
+    webviewPanel.webview.onDidReceiveMessage(
+      (message: TaskExecutionOutputMessage) => {
+        switch (message.type) {
+          case TaskExecutionOutputMessageType.RunCommand: {
+            const messageWithOptionDefaults = getCliTaskWithDefaults(
+              message.payload,
+              webViewSchema
+            );
+            cliTaskProvider.executeTask(messageWithOptionDefaults);
+            break;
+          }
+          case TaskExecutionOutputMessageType.TaskExecutionFormInit: {
+            publishMessagesToTaskExecutionForm(
+              webviewPanel as WebviewPanel,
+              schema
+            );
+            break;
+          }
+        }
+      }
+    );
   }
 
   return webviewPanel;

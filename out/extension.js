@@ -34,6 +34,7 @@ function activate(context) {
     registerCommand("domain-generators.removeGroupingFolder", generator_name_1.GeneratorName.removeGroupingFolder, command_1.Command.generate);
     registerCommand("domain-generators.ngApplicationLayer", generator_name_1.GeneratorName.ngApplicationLayer, command_1.Command.generate);
     registerCommand("domain-generators.ngComponent", generator_name_1.GeneratorName.ngComponent, command_1.Command.generate);
+    registerCommand("domain-generators.ngComponentGlobalStyles", generator_name_1.GeneratorName.ngComponentGlobalStyles, command_1.Command.generate);
     registerCommand("domain-generators.ngDataAccessLayer", generator_name_1.GeneratorName.ngDataAccessLayer, command_1.Command.generate);
     registerCommand("domain-generators.ngDirective", generator_name_1.GeneratorName.ngDirective, command_1.Command.generate);
     registerCommand("domain-generators.ngDomainLayer", generator_name_1.GeneratorName.ngDomainLayer, command_1.Command.generate);

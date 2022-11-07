@@ -9,6 +9,7 @@ var GeneratorName;
     GeneratorName["removeGroupingFolder"] = "removeGroupingFolder";
     GeneratorName["ngApplicationLayer"] = "ngApplicationLayer";
     GeneratorName["ngComponent"] = "ngComponent";
+    GeneratorName["ngComponentGlobalStyles"] = "ngComponentGlobalStyles";
     GeneratorName["ngDataAccessLayer"] = "ngDataAccessLayer";
     GeneratorName["ngDirective"] = "ngDirective";
     GeneratorName["ngDomainLayer"] = "ngDomainLayer";

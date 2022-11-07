@@ -3,7 +3,7 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "engines": {
     "vscode": "^1.72.0"
   },
@@ -197,7 +197,7 @@
         {
           "command": "domain-generators.ct",
           "group": "3+domainRun@3",
-          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](feature|directive|shell|ui).*$/"
+          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\]\\.ct.*$/"
         },
         {
           "command": "domain-generators.e2e",

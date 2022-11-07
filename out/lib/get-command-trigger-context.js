@@ -10,6 +10,8 @@ const getCommandTriggerContext = (triggeredFromUri) => {
         groupingFolder,
         dasherizedGroupingFolderPath: groupingFolder
             .replace("libs/", "")
+            .replace("/.e2e", "")
+            .replace("/.ct", "")
             .replace(/\//g, "-"),
     };
 };

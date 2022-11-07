@@ -14,6 +14,8 @@ export const getCommandTriggerContext = (
     groupingFolder,
     dasherizedGroupingFolderPath: groupingFolder
       .replace("libs/", "")
+      .replace("/.e2e", "")
+      .replace("/.ct", "")
       .replace(/\//g, "-"),
   };
 };
