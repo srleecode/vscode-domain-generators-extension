@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCommandTriggerContext = void 0;
 const vscode_1 = require("vscode");
 const getCommandTriggerContext = (triggeredFromUri) => {
-    var _a, _b;
-    const rootPath = (_b = (_a = (vscode_1.workspace.workspaceFolders || [])[0]) === null || _a === void 0 ? void 0 : _a.uri) === null || _b === void 0 ? void 0 : _b.path;
+    const workspaceFolder = (vscode_1.workspace.workspaceFolders || []).find(folder => triggeredFromUri.path.startsWith(folder.uri.path));
+    const rootPath = workspaceFolder === null || workspaceFolder === void 0 ? void 0 : workspaceFolder.uri.path;
     const groupingFolder = triggeredFromUri.path.replace(`${rootPath}/`, "");
     return {
         groupingFolder,

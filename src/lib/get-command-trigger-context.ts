@@ -8,7 +8,8 @@ export interface CommandTriggerContext {
 export const getCommandTriggerContext = (
   triggeredFromUri: Uri
 ): CommandTriggerContext => {
-  const rootPath = (workspace.workspaceFolders || [])[0]?.uri?.path;
+  const workspaceFolder = (workspace.workspaceFolders || []).find(folder => triggeredFromUri.path.startsWith(folder.uri.path));
+  const rootPath = workspaceFolder?.uri.path;
   const groupingFolder = triggeredFromUri.path.replace(`${rootPath}/`, "");
   return {
     groupingFolder,

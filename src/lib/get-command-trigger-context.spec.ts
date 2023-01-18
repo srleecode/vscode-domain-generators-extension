@@ -6,6 +6,11 @@ jest.mock(
       workspaceFolders: [
         {
           uri: {
+            path: "test",
+          },
+        },
+        {
+          uri: {
             path: "/c:/Users/Default.SCOTT-PC/Documents/GitHub/domain-example",
           },
         },
