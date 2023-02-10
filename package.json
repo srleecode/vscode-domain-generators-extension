@@ -3,7 +3,7 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -11,28 +11,8 @@
     "Other"
   ],
   "publisher": "srleecode",
-  "activationEvents": [
-    "onCommand:domain-generators.appGroupingFolder",
-    "onCommand:domain-generators.domainGroupingFolder",
-    "onCommand:domain-generators.moveGroupingFolder",
-    "onCommand:domain-generators.removeGroupingFolder",
-    "onCommand:domain-generators.ngApplicationLayer",
-    "onCommand:domain-generators.ngComponent",
-    "onCommand:domain-generators.ngComponentGlobalStyles",
-    "onCommand:domain-generators.ngDataAccessLayer",
-    "onCommand:domain-generators.ngDirective",
-    "onCommand:domain-generators.ngDomainLayer",
-    "onCommand:domain-generators.ngUtilLayer",
-    "onCommand:domain-generators.domainTest",
-    "onCommand:domain-generators.ngRemoveLibrary",
-    "onCommand:domain-generators.mockFile",
-    "onCommand:domain-generators.lint",
-    "onCommand:domain-generators.test",
-    "onCommand:domain-generators.ct",
-    "onCommand:domain-generators.e2e",
-    "onCommand:domain-generators.update-barrel"
-  ],
   "main": "./out/extension.js",
+  "activationEvents": [],
   "contributes": {
     "commands": [
       {

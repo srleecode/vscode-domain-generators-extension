@@ -12,7 +12,7 @@ import { getBarrelCommand } from "./lib/get-barral-command";
 export function activate(context: ExtensionContext) {
   const taskProvider = new CliTaskProvider();
   const nxConsole = extensions.getExtension("nrwl.angular-console");
-  if (nxConsole === undefined) {
+if (nxConsole === undefined) {
     showError(
       "The Nx console extension should be installed for the @srleecode/domain to work"
     );
@@ -29,11 +29,11 @@ export function activate(context: ExtensionContext) {
       if (!!nxConsole) {
         revealWebViewPanel(
           context,
-          nxConsole?.extensionPath,
           taskProvider,
           action,
           type,
-          getCommandTriggerContext(e)
+          getCommandTriggerContext(e),
+          nxConsole
         );
       }
     });

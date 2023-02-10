@@ -1,40 +1,41 @@
-import { readFileSync } from "fs";
 import { join } from "path";
 import {
+  commands,
+  Extension,
   ExtensionContext,
+  ExtensionMode,
   Uri,
   ViewColumn,
+  Webview,
   WebviewPanel,
   window,
 } from "vscode";
-import { CliTaskProvider } from "./cli-task-provider";
-import { TaskExecutionSchema } from "./task-execution-schema";
-import { CliTaskDefinition } from "./cli-task-definition";
-import { getTaskExecutionSchema } from "../task-execution-schema/get-task-execution-schema";
-import { GeneratorName } from "../model/generator-name";
-import { CommandTriggerContext } from "../get-command-trigger-context";
-import { Command } from "../model/command";
-import { getCliTaskWithDefaults } from "../get-cli-task-with-defaults";
-import { TaskExecutionOutputMessageType } from "../model/task-execution-output-message-type";
+import { watch } from "fs";
 import {
-  TaskExecutionGlobalConfigurationInputMessage,
   TaskExecutionOutputMessage,
   TaskExecutionSchemaInputMessage,
+  TaskExecutionGlobalConfigurationInputMessage,
 } from "../model/task-execution-output-message";
+import { TaskExecutionOutputMessageType } from "../model/task-execution-output-message-type";
+import { getTaskExecutionSchema } from "../task-execution-schema/get-task-execution-schema";
+import { CliTaskProvider } from "./cli-task-provider";
+import { TaskExecutionSchema } from "./task-execution-schema";
+import { CommandTriggerContext } from "../get-command-trigger-context";
+import { GeneratorName } from "../model/generator-name";
+import { Command } from "../model/command";
+import { getCliTaskWithDefaults } from "../get-cli-task-with-defaults";
 
 let webviewPanel: WebviewPanel | undefined;
-let webViewSchema: TaskExecutionSchema;
-let indexHtml: string | undefined;
 
-export function revealWebViewPanel(
+export async function revealWebViewPanel(
   context: ExtensionContext,
-  nxConsoleExtensionPath: string,
   cliTaskProvider: CliTaskProvider,
   generatorName: GeneratorName,
   command: Command,
-  commandTriggerContext: CommandTriggerContext
+  commandTriggerContext: CommandTriggerContext,
+  nxConsoleExtension: Extension<any>
 ) {
-  const schema = getTaskExecutionSchema(
+  const schema = await getTaskExecutionSchema(
     generatorName,
     command,
     commandTriggerContext,
@@ -46,42 +47,26 @@ export function revealWebViewPanel(
   }
 
   const webViewPanel = createWebViewPanel(
-    nxConsoleExtensionPath,
+    context,
     schema,
     command,
-    cliTaskProvider
+    cliTaskProvider,
+    nxConsoleExtension
   );
   context.subscriptions.push(webViewPanel);
 
   return webViewPanel;
 }
 
-function publishMessagesToTaskExecutionForm(
-  webViewPanelRef: WebviewPanel,
-  schema: TaskExecutionSchema
-) {
-  webViewPanelRef.webview.postMessage(
-    new TaskExecutionSchemaInputMessage(schema)
-  );
-  webViewPanelRef.webview.postMessage(
-    new TaskExecutionGlobalConfigurationInputMessage({
-      enableTaskExecutionDryRunOnChange: true,
-    })
-  );
-}
-
 export function createWebViewPanel(
-  nxConsoleExtensionPath: string,
+  context: ExtensionContext,
   schema: TaskExecutionSchema,
   title: string,
-  cliTaskProvider: CliTaskProvider
+  cliTaskProvider: CliTaskProvider,
+  nxConsoleExtension: Extension<any>
 ) {
-  webViewSchema = schema;
-  if (webviewPanel) {
-    webviewPanel.title = title;
-    webviewPanel.webview.postMessage({ taskExecutionSchema: schema });
-    webviewPanel.reveal();
-  } else {
+  const webviewPanelExists = !!webviewPanel;
+  if (!webviewPanel) {
     webviewPanel = window.createWebviewPanel(
       "nx-console", // Identifies the type of the webview. Used internally
       title, // Title of the panel displayed to the user
@@ -89,30 +74,42 @@ export function createWebViewPanel(
       {
         retainContextWhenHidden: true,
         enableScripts: true,
+        localResourceRoots: [
+          Uri.joinPath(nxConsoleExtension.extensionUri, "assets", "public"),
+        ],
       }
     );
     webviewPanel.onDidDispose(() => {
       webviewPanel = undefined;
     });
-    webviewPanel.iconPath = Uri.file(
-      join(nxConsoleExtensionPath, "assets", "nx-console.svg")
-    );
+    webviewPanel.iconPath = {
+      light: Uri.file(
+        join(nxConsoleExtension.extensionPath, "assets", "nx-console-light.svg")
+      ),
+      dark: Uri.file(
+        join(nxConsoleExtension.extensionPath, "assets", "nx-console-dark.svg")
+      ),
+    };
+    setWebViewContent(webviewPanel, nxConsoleExtension);
 
-    webviewPanel.webview.html = getIframeHtml(
-      nxConsoleExtensionPath,
-      webViewSchema
-    );
+    if (context.extensionMode === ExtensionMode.Development) {
+      watch(join(nxConsoleExtension.extensionPath, "assets", "public"), () => {
+        if (webviewPanel) {
+          setWebViewContent(webviewPanel, nxConsoleExtension);
+          commands.executeCommand(
+            "workbench.action.webview.reloadWebviewAction"
+          );
+        }
+      });
+    }
 
-    webviewPanel.webview.onDidReceiveMessage(
-      (message: CliTaskDefinition) => {}
-    );
     webviewPanel.webview.onDidReceiveMessage(
       (message: TaskExecutionOutputMessage) => {
         switch (message.type) {
           case TaskExecutionOutputMessageType.RunCommand: {
             const messageWithOptionDefaults = getCliTaskWithDefaults(
               message.payload,
-              webViewSchema
+              schema
             );
             cliTaskProvider.executeTask(messageWithOptionDefaults);
             break;
@@ -129,52 +126,77 @@ export function createWebViewPanel(
     );
   }
 
+  if (!webviewPanelExists) {webviewPanel.title = title;}
+
+  publishMessagesToTaskExecutionForm(webviewPanel, schema);
+
+  webviewPanel?.reveal();
+
   return webviewPanel;
 }
 
-export function getIframeHtml(
-  nxConsoleExtensionPath: string,
+function publishMessagesToTaskExecutionForm(
+  webViewPanelRef: WebviewPanel,
   schema: TaskExecutionSchema
 ) {
-  if (!indexHtml) {
-    // Cache html and inline all styles and scripts.
-    indexHtml = `<!DOCTYPE html>
+  webViewPanelRef.webview.postMessage(
+    new TaskExecutionSchemaInputMessage(schema)
+  );
+  webViewPanelRef.webview.postMessage(
+    new TaskExecutionGlobalConfigurationInputMessage({
+      enableTaskExecutionDryRunOnChange: true,
+    })
+  );
+}
+
+function setWebViewContent(
+  webviewPanel: WebviewPanel,
+  nxConsoleExtension: Extension<any>
+) {
+  webviewPanel.webview.html = getIframeHtml(
+    webviewPanel.webview,
+    nxConsoleExtension
+  );
+}
+
+export function getIframeHtml(
+  webView: Webview,
+  nxConsoleExtension: Extension<any>
+) {
+  const stylePath = Uri.joinPath(
+    nxConsoleExtension.extensionUri,
+    "assets",
+    "public",
+    "styles.css"
+  );
+  const runtimePath = Uri.joinPath(
+    nxConsoleExtension.extensionUri,
+    "assets",
+    "public",
+    "runtime.js"
+  );
+  const mainPath = Uri.joinPath(
+    nxConsoleExtension.extensionUri,
+    "assets",
+    "public",
+    "main.js"
+  );
+
+  return `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>VscodeUi</title>
     <base href="/" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <script>
-      // At runtime, VSCode server will replace this empty schema with the one to render.
-      window.VSCODE_UI_SCHEMA = {};
-      window.addEventListener('message', event => {
-        const taskExecutionSchema = event.data.taskExecutionSchema;
-        if (taskExecutionSchema && window.SET_TASK_EXECUTION_SCHEMA) {
-          window.SET_TASK_EXECUTION_SCHEMA(taskExecutionSchema);
-        }
-      });
-      window.vscode = acquireVsCodeApi();
-    </script>
-    <style>${readFileSync(
-      join(nxConsoleExtensionPath, "assets/public/styles.css")
-    )}</style>
+
+    <link href="${webView.asWebviewUri(stylePath)}" rel="stylesheet"/>
   </head>
   <body>
-    <vscode-ui-task-execution-form></vscode-ui-task-execution-form>
-    <script>
-      ${readFileSync(join(nxConsoleExtensionPath, "assets/public/runtime.js"))}
-    </script>
-    <script>
-      ${readFileSync(join(nxConsoleExtensionPath, "assets/public/main.js"))}
-    </script>
+    <generate-ui-task-execution-form></generate-ui-task-execution-form>
+    <script src="${webView.asWebviewUri(runtimePath)}"></script>
+    <script src="${webView.asWebviewUri(mainPath)}"></script>
   </body>
 </html>`;
-  }
-
-  return indexHtml.replace(
-    "window.VSCODE_UI_SCHEMA = {};",
-    `window.VSCODE_UI_SCHEMA = ${JSON.stringify(schema)};`
-  );
 }
