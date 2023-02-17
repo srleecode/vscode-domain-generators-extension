@@ -32,8 +32,9 @@ export type TaskExecutionInputMessage =
   | TaskExecutionGlobalConfigurationInputMessage;
 
 export enum TaskExecutionInputMessageType {
-  SetTaskExecutionSchema = 1,
-  SetGlobalConfiguration,
+  SetTaskExecutionSchema = "generator",
+  SetGlobalConfiguration = "config",
+  SetStyles = "style",
 }
 
 export class TaskExecutionSchemaInputMessage {

@@ -1,6 +1,5 @@
 import { CommandTriggerContext } from "../get-command-trigger-context";
 import { SchemaJson } from "../model/schema-json";
-import { Option } from "../model/option";
 import {
   XPrompt,
   isLongFormXPrompt,
@@ -10,6 +9,7 @@ import { getDefaultValue } from "./get-default-value";
 import { getEnumTooltips } from "./get-enum-tooltips";
 import { getWorkspaceJsonDefaults } from "./get-workspace-json-defaults";
 import { GeneratorName } from "../model/generator-name";
+import { Option } from "../nx-console/task-execution-schema";
 
 export const getOptions = (
   schema: SchemaJson,
@@ -28,6 +28,8 @@ export const getOptions = (
     const schemaProperty = schema.properties[key];
     const option: Option = {
       name: key,
+      originalName: key,
+      aliases: schemaProperty.alias ? [schemaProperty.alias] : [],
       ...schemaProperty,
     };
     delete option.items;
@@ -38,7 +40,7 @@ export const getOptions = (
       commandTriggerContext,
       workspaceJsonDefaults[generatorName.toString()]
     );
-    option.required = schema.required.includes(key);
+    option.isRequired = schema.required.includes(key);
     if (option.enum) {
       option.items = option.enum.map((item: any) => item.toString());
     }

@@ -75,7 +75,7 @@ export function createWebViewPanel(
         retainContextWhenHidden: true,
         enableScripts: true,
         localResourceRoots: [
-          Uri.joinPath(nxConsoleExtension.extensionUri, "assets", "public"),
+          Uri.joinPath(nxConsoleExtension.extensionUri, "generate-ui"),
         ],
       }
     );
@@ -92,17 +92,6 @@ export function createWebViewPanel(
     };
     setWebViewContent(webviewPanel, nxConsoleExtension);
 
-    if (context.extensionMode === ExtensionMode.Development) {
-      watch(join(nxConsoleExtension.extensionPath, "assets", "public"), () => {
-        if (webviewPanel) {
-          setWebViewContent(webviewPanel, nxConsoleExtension);
-          commands.executeCommand(
-            "workbench.action.webview.reloadWebviewAction"
-          );
-        }
-      });
-    }
-
     webviewPanel.webview.onDidReceiveMessage(
       (message: TaskExecutionOutputMessage) => {
         switch (message.type) {
@@ -115,6 +104,7 @@ export function createWebViewPanel(
             break;
           }
           case TaskExecutionOutputMessageType.TaskExecutionFormInit: {
+            commands.executeCommand('workbench.action.focusActiveEditorGroup');
             publishMessagesToTaskExecutionForm(
               webviewPanel as WebviewPanel,
               schema
@@ -165,20 +155,17 @@ export function getIframeHtml(
 ) {
   const stylePath = Uri.joinPath(
     nxConsoleExtension.extensionUri,
-    "assets",
-    "public",
+    "generate-ui",
     "styles.css"
   );
   const runtimePath = Uri.joinPath(
     nxConsoleExtension.extensionUri,
-    "assets",
-    "public",
+    "generate-ui",
     "runtime.js"
   );
   const mainPath = Uri.joinPath(
     nxConsoleExtension.extensionUri,
-    "assets",
-    "public",
+    "generate-ui",
     "main.js"
   );
 
@@ -192,6 +179,11 @@ export function getIframeHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link href="${webView.asWebviewUri(stylePath)}" rel="stylesheet"/>
+    <style>
+      body {
+        color: var(--secondary-text-color);
+      }
+    </style>
   </head>
   <body>
     <generate-ui-task-execution-form></generate-ui-task-execution-form>

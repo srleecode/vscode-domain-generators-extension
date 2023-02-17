@@ -20,37 +20,34 @@ describe("getCliTaskWithDefaults", () => {
         {
           name: "application",
           type: "string",
+          isRequired: false,
           description:
             "Application that the new domain libraries will belong to",
           alias: "a",
           "x-prompt":
             "What application will the new domain libraries be under?",
           default: "blog",
+          aliases: []
         },
         {
           name: "domain",
           type: "string",
+          isRequired: false,
           description:
             "Name of the domain. Format is parent-domain/child-domain for child domains and domain/shared for parent domains.",
           alias: "d",
           "x-prompt":
             "What is the name of the domain? Use parent-domain/child-domain format for a child domain. Use domain/shared format for parent domains.",
           default: "new3/",
+          aliases: []
         },
         {
           name: "prefix",
           type: "string",
           description: "The prefix to apply to generated selectors.",
           alias: "p",
-          oneOf: [
-            {
-              maxLength: 0,
-            },
-            {
-              minLength: 1,
-              format: "html-selector",
-            },
-          ],
+          aliases: [],
+          isRequired: false,
           "x-prompt": "What is the prefix to apply to generated selectors?",
           default: "test",
         },
@@ -58,16 +55,14 @@ describe("getCliTaskWithDefaults", () => {
           name: "libraries",
           description: "The library types that will be generated",
           type: "array",
-          items: {
-            type: "string",
-          },
-          uniqueItems: true,
+          aliases: [],
+          isRequired: false,
           alias: "l",
           default: ["data-access", "feature", "shell", "ui", "util"],
           "x-prompt": {
             message: "Which library types do you want to generate?",
             type: "list",
-            "multi-select": true,
+    
             items: [
               {
                 value: "data-access",
@@ -96,9 +91,11 @@ describe("getCliTaskWithDefaults", () => {
         },
         {
           name: "style",
+          aliases: [],
           description: "The file extension to be used for style files.",
           type: "string",
           default: "scss",
+          isRequired: false,
           alias: "s",
           "x-prompt": {
             message: "Which stylesheet format would you like to use?",
@@ -123,6 +120,8 @@ describe("getCliTaskWithDefaults", () => {
           name: "addJestJunitReporter",
           description: "Add jest junit reporter setup",
           type: "boolean",
+          aliases: [],
+          isRequired: false,
           default: false,
           "x-prompt": "Configure jest junit reporter?",
         },
@@ -130,6 +129,8 @@ describe("getCliTaskWithDefaults", () => {
           name: "addE2EProject",
           description: "Add a e2e cypress project",
           type: "boolean",
+          aliases: [],
+          isRequired: false,
           default: false,
           "x-prompt": "Add a cypress e2e app?",
         },
@@ -137,6 +138,8 @@ describe("getCliTaskWithDefaults", () => {
           name: "addStorybookProject",
           description: "Add storybook project",
           type: "boolean",
+          aliases: [],
+          isRequired: false,
           default: false,
           "x-prompt": "Add a storybook app?",
         },
@@ -144,7 +147,7 @@ describe("getCliTaskWithDefaults", () => {
       description: "",
       command: "generate",
       positional: "@srleecode/domain:create",
-      cliName: "ng",
+      cliName: "nx",
       contextValues: undefined,
     };
     const message = getCliTaskWithDefaults(taskDefinition, schema);

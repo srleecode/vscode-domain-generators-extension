@@ -1,4 +1,4 @@
 export enum TaskExecutionOutputMessageType {
-  TaskExecutionFormInit = 1,
-  RunCommand,
+  TaskExecutionFormInit = 'output-init',
+  RunCommand = 'run-command',
 }

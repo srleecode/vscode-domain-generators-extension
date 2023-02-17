@@ -13,7 +13,6 @@ export const getTaskExecutionSchema = (
   workspaceJsonPath: string
 ): TaskExecutionSchema => {
   const name = generatorName.toString();
-  const cliName = "nx";
   const collection = getCollection(commandType, generatorName);
   const schemaJson = getSchemaJson(commandType, generatorName, collection);
   return {
@@ -34,7 +33,7 @@ export const getTaskExecutionSchema = (
       collection,
       commandTriggerContext
     ),
-    cliName,
+    cliName: "nx",
     contextValues: undefined,
   };
 };

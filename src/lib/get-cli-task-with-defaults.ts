@@ -41,7 +41,7 @@ const getExistingFlags = (message: CliTaskDefinition): Set<string> => {
 };
 
 const getOptionDefaultString = (
-  optionDefault: string[] | string | number | boolean
+  optionDefault: any
 ) => {
   if (Array.isArray(optionDefault)) {
     return optionDefault.join(",");
