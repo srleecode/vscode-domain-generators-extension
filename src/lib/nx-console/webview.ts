@@ -26,7 +26,7 @@ import { Command } from "../model/command";
 import { getCliTaskWithDefaults } from "../get-cli-task-with-defaults";
 
 let webviewPanel: WebviewPanel | undefined;
-
+let taskSchema: TaskExecutionSchema;
 export async function revealWebViewPanel(
   context: ExtensionContext,
   cliTaskProvider: CliTaskProvider,
@@ -47,7 +47,6 @@ export async function revealWebViewPanel(
   }
 
   const webViewPanel = createWebViewPanel(
-    context,
     schema,
     command,
     cliTaskProvider,
@@ -59,20 +58,20 @@ export async function revealWebViewPanel(
 }
 
 export function createWebViewPanel(
-  context: ExtensionContext,
   schema: TaskExecutionSchema,
   title: string,
   cliTaskProvider: CliTaskProvider,
   nxConsoleExtension: Extension<any>
 ) {
   const webviewPanelExists = !!webviewPanel;
+  taskSchema = schema;
   if (!webviewPanel) {
     webviewPanel = window.createWebviewPanel(
       "nx-console", // Identifies the type of the webview. Used internally
       title, // Title of the panel displayed to the user
       ViewColumn.Active, // Editor column to show the new webview panel in.
       {
-        retainContextWhenHidden: true,
+        retainContextWhenHidden: false,
         enableScripts: true,
         localResourceRoots: [
           Uri.joinPath(nxConsoleExtension.extensionUri, "generate-ui"),
@@ -98,7 +97,7 @@ export function createWebViewPanel(
           case TaskExecutionOutputMessageType.RunCommand: {
             const messageWithOptionDefaults = getCliTaskWithDefaults(
               message.payload,
-              schema
+              taskSchema
             );
             cliTaskProvider.executeTask(messageWithOptionDefaults);
             break;
@@ -107,7 +106,7 @@ export function createWebViewPanel(
             commands.executeCommand('workbench.action.focusActiveEditorGroup');
             publishMessagesToTaskExecutionForm(
               webviewPanel as WebviewPanel,
-              schema
+              taskSchema
             );
             break;
           }
@@ -118,7 +117,7 @@ export function createWebViewPanel(
 
   if (!webviewPanelExists) {webviewPanel.title = title;}
 
-  publishMessagesToTaskExecutionForm(webviewPanel, schema);
+  publishMessagesToTaskExecutionForm(webviewPanel, taskSchema);
 
   webviewPanel?.reveal();
 
