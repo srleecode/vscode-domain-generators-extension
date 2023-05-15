@@ -1,18 +1,15 @@
-import { ExtensionContext, extensions, commands, Uri, window } from "vscode";
+import { ExtensionContext, extensions, commands, Uri } from "vscode";
 import { getCommandTriggerContext } from "./lib/get-command-trigger-context";
-import { CliTaskProvider } from "./lib/nx-console/cli-task-provider";
-import { revealWebViewPanel } from "./lib/nx-console/webview";
 import { GeneratorName } from "./lib/model/generator-name";
 import { Command } from "./lib/model/command";
 import { showError } from "./lib/error-utils";
-import { getBarrelCommand } from "./lib/get-barral-command";
+import { getBarrelCommand } from "./lib/get-barrel-command";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
-  const taskProvider = new CliTaskProvider();
   const nxConsole = extensions.getExtension("nrwl.angular-console");
-if (nxConsole === undefined) {
+  if (nxConsole === undefined) {
     showError(
       "The Nx console extension should be installed for the @srleecode/domain to work"
     );
@@ -25,19 +22,21 @@ if (nxConsole === undefined) {
     action: GeneratorName,
     type: Command
   ) => {
-    const command = commands.registerCommand(name, (e: Uri) => {
-      if (!!nxConsole) {
-        revealWebViewPanel(
-          context,
-          taskProvider,
-          action,
-          type,
-          getCommandTriggerContext(e),
-          nxConsole
-        );
-      }
-    });
-    context.subscriptions.push(command);
+    if (type === Command.generate) {
+      const command = commands.registerCommand(name, (e: Uri) => {
+        commands.executeCommand("nx.generate.ui.fileexplorer", e);
+      });
+      context.subscriptions.push(command);
+    } else {
+      const command = commands.registerCommand(name, (e: Uri) => {
+        const commandTriggerContext = getCommandTriggerContext(e);
+        const project = commandTriggerContext.dasherizedGroupingFolderPath;
+        const target = action;
+        commands.executeCommand("nx.run", project, target);
+      });
+
+      context.subscriptions.push(command);
+    }
   };
 
   registerCommand(
@@ -76,8 +75,8 @@ if (nxConsole === undefined) {
     Command.generate
   );
   registerCommand(
-    "domain-generators.ngDataAccessLayer",
-    GeneratorName.ngDataAccessLayer,
+    "domain-generators.ngInfrastructureLayer",
+    GeneratorName.ngInfrastructureLayer,
     Command.generate
   );
   registerCommand(

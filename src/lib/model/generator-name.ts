@@ -6,7 +6,7 @@ export enum GeneratorName {
   ngApplicationLayer = "ngApplicationLayer",
   ngComponent = "ngComponent",
   ngComponentGlobalStyles = "ngComponentGlobalStyles",
-  ngDataAccessLayer = "ngDataAccessLayer",
+  ngInfrastructureLayer = "ngInfrastructureLayer",
   ngDirective = "ngDirective",
   ngDomainLayer = "ngDomainLayer",
   ngUtilLayer = "ngUtilLayer",

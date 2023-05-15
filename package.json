@@ -3,7 +3,7 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -52,8 +52,8 @@
         "title": "Create component global styles"
       },
       {
-        "command": "domain-generators.ngDataAccessLayer",
-        "title": "Create data-access layer"
+        "command": "domain-generators.ngInfrastructureLayer",
+        "title": "Create infrastructure layer"
       },
       {
         "command": "domain-generators.ngDirective",
@@ -102,22 +102,22 @@
         {
           "command": "domain-generators.domainGroupingFolder",
           "group": "1+groupingFolder@2",
-          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.moveGroupingFolder",
           "group": "1+groupingFolder@3",
-          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.removeGroupingFolder",
           "group": "1+groupingFolder@4",
-          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngRemoveLibrary",
           "group": "1+domainLibrary@1",
-          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|directive|domain|feature|presentation|shell|ui|util)$/"
+          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|infrastructure|directive|domain|feature|presentation|shell|ui|util)$/"
         },
         {
           "command": "domain-generators.mockFile",
@@ -127,12 +127,12 @@
         {
           "command": "domain-generators.ngApplicationLayer",
           "group": "2+domainGroupingFolder@1",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngComponent",
           "group": "2+domainGroupingFolder@2",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngComponentGlobalStyles",
@@ -140,39 +140,39 @@
           "when": "resourcePath =~ /(feature|presentation|shell|ui)[/\\\\].+\\.component\\.ts$/"
         },
         {
-          "command": "domain-generators.ngDataAccessLayer",
+          "command": "domain-generators.ngInfrastructureLayer",
           "group": "2+domainGroupingFolder@4",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngDirective",
           "group": "2+domainGroupingFolder@5",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngDomainLayer",
           "group": "2+domainGroupingFolder@6",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.ngUtilLayer",
           "group": "2+domainGroupingFolder@7",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.domainTest",
           "group": "2+domainGroupingFolder@8",
-          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
+          "when": "resourcePath =~ /libs[/\\\\].+([/\\\\](?!(application|data-access|infrastructure|directive|domain|feature|presentation|shell|src|lib|ui|util))[^./\\\\]+)+$/"
         },
         {
           "command": "domain-generators.lint",
           "group": "3+domainRun@1",
-          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|domain|feature|directive|presentation|shell|ui|util)$/"
+          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|infrastructure|domain|feature|directive|presentation|shell|ui|util)$/"
         },
         {
           "command": "domain-generators.test",
           "group": "3+domainRun@2",
-          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|domain|feature|directive|presentation|shell|ui|util)$/"
+          "when": "resourcePath =~ /libs[/\\\\].+[/\\\\](application|data-access|infrastructure|domain|feature|directive|presentation|shell|ui|util)$/"
         },
         {
           "command": "domain-generators.ct",
@@ -228,7 +228,7 @@
           "when": "never"
         },
         {
-          "command": "domain-generators.ngDataAccessLayer",
+          "command": "domain-generators.ngInfrastructureLayer",
           "when": "never"
         },
         {
