@@ -3,9 +3,9 @@
   "displayName": "@srleecode/domain-generators",
   "description": "Extension for triggering nx domain generators",
   "repository": "https://github.com/srleecode/vscode-domain-generators-extension",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "3.3.2"
   },
   "categories": [
     "Other"
