@@ -3,7 +3,7 @@ import { getCommandTriggerContext } from "./lib/get-command-trigger-context";
 import { GeneratorName } from "./lib/model/generator-name";
 import { Command } from "./lib/model/command";
 import { showError } from "./lib/error-utils";
-import { getBarrelCommand } from "./lib/get-barrel-command";
+import { updateBarrelFile } from "./lib/update-barrel-file";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -113,8 +113,11 @@ export function activate(context: ExtensionContext) {
   registerCommand("domain-generators.test", GeneratorName.test, Command.run);
   registerCommand("domain-generators.ct", GeneratorName.ct, Command.run);
   registerCommand("domain-generators.e2e", GeneratorName.e2e, Command.run);
-
-  context.subscriptions.push(getBarrelCommand());
+  context.subscriptions.push(
+    commands.registerCommand("domain-generators.update-barrel", (uri: Uri) =>
+      updateBarrelFile(uri)
+    )
+  );
 }
 
 // this method is called when your extension is deactivated
